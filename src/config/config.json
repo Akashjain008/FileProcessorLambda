@@ -1,0 +1,22 @@
+{
+    "dev": {
+        "QUEUE_URL": "https://sqs.us-east-1.amazonaws.com/935493626899/file-events-receiver",
+        "HASH_ALGO": "MD5",
+        "PORTABLE_EXECUTABLE_HEADER": "4d5a",
+        "ALL_FILE_BUCKET": "filereceiverbucket",
+        "PE_FILE_BUCKET": "portable-executable-file-bucket",
+        "HASH_TABLE_NAME": "file_hash_details",
+        "FILE_TABLE_NAME": "file_metadata",
+        "FILE_BUCKET_URL": "https://portable-executable-file-bucket.s3.amazonaws.com/"
+    },
+    "prod": {
+        "QUEUE_URL": "https://sqs.us-east-1.amazonaws.com/935493626899/file-events-receiver",
+        "HASH_ALGO": "MD5",
+        "PORTABLE_EXECUTABLE_HEADER": "4d5a",
+        "ALL_FILE_BUCKET": "filereceiverbucket",
+        "PE_FILE_BUCKET": "portable-executable-file-bucket",
+        "HASH_TABLE_NAME": "file_hash_details",
+        "FILE_TABLE_NAME": "file_metadata",
+        "FILE_BUCKET_URL": "https://portable-executable-file-bucket.s3.amazonaws.com/"
+    }
+}

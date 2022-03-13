@@ -1,0 +1,29 @@
+service: file-processor-lambda
+frameworkversion: '2'
+useDotenv: true
+
+package:
+  individually: true
+  include:
+    - '../src/**'
+  exclude:
+    - ./**
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  stage: dev
+  region: us-east-1
+  lambdaHashingVersion: 20201221
+
+functions:
+    fileProcessor:
+      handler: src/index.handler
+      name: fileProcessorLambda
+      role: 'arn:aws:iam::935493626898:role/basic-lambda-role'
+      memorySize: 128
+      timeout: 120
+      events:
+        -sqs
+          arn: 'arn:aws:sqs:us-east-1:935493626898:file-events-receiver'
+          batchSize: 1

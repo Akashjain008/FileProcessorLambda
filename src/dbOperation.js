@@ -1,22 +1,27 @@
+const AWS = require('aws-sdk');
 const dynamodb = new AWS.DynamoDB();
 const { v4: uuidv4 } = require('uuid');
+const Config = require('./config/appConfig');
+const appConfig = Config.getConfig();
 
-const DBOpearations = {
-    saveFileDetails: async (requestBody) => {
+class DBOpearations {
+    async saveFileDetails(requestBody) {
         try {
             let params = {
-                TableName: 'file-metadata',
+                TableName: appConfig.FILE_TABLE_NAME,
                 Item: {
                     id: { S: uuidv4() },
-                    fileHash: { S: requestBody.hash },
                     name: { S: requestBody.name },
-                    size: { S: requestBody.size },
-                    type: { S: requestBody.type },
-                    customName: { S: requestBody.customName },
-                    expiryDate: { S: Date.now().toString() }
+                    size: { S: requestBody.size.toString() },
+                    file_path: { S: requestBody.filePath },
+                    file_hash_id: { S: requestBody.hash },
+                    mime_type: { S: requestBody.type },
+                    custom_name: { S: requestBody.customName },
+                    created_at: { S: new Date().toDateString() },
+                    expiry_at: { S: Date.now().toString() }
                 }
             };
-            console.log(params);
+            console.log('saveFileDetails params', params);
             const data = await dynamodb.putItem(params).promise();
             console.log('Item added successfully', data);
             return data;
@@ -24,20 +29,22 @@ const DBOpearations = {
             console.log("Error: ", err);
             throw err;
         }
-    },
-    checkItemExists: async (requestBody) => {
+    };
+    async checkItemExists(requestBody) {
         try {
             const dynamodb = new AWS.DynamoDB();
             let params = {
-                TableName: 'fileTracker',
+                TableName: appConfig.HASH_TABLE_NAME,
                 Item: {
-                    fileHash: { S: requestBody.hash },
-                    fileName: { S: requestBody.customName },
-                    expiryDate: { S: Date.now().toString() }
+                    file_hash_id: { S: requestBody.hash },
+                    file_name: { S: requestBody.customName },
+                    file_hash_algo: { S: requestBody.hashAlgo },
+                    created_at: { S: new Date().toDateString() },
+                    expiry_at: { S: Date.now().toString() }
                 },
-                ConditionExpression: 'attribute_not_exists(fileHash)'
+                ConditionExpression: 'attribute_not_exists(file_hash_id)'
             };
-            console.log(params);
+            console.log('checkItemExists params', params);
             const data = await dynamodb.putItem(params).promise();
             console.log('Item added successfully', data);
             return false;
@@ -49,8 +56,8 @@ const DBOpearations = {
             }
             throw err;
         }
-    }
+    };
 };
 
-export default DBOpearations;
+module.exports = new DBOpearations();
 
